@@ -1,111 +1,81 @@
-#Implementation of Two Player Tic-Tac-Toe game in Python.
+import random
+from tabnanny import check
 
-''' We will make the board using dictionary 
-    in which keys will be the location(i.e : top-left,mid-right,etc.)
-    and initialliy it's values will be empty space and then after every move 
-    we will change the value according to player's choice of move. '''
+def main():
+    board_nums = board_values()
+    next_player = player_turn('')
 
-theBoard = {'7': ' ' , '8': ' ' , '9': ' ' ,
-            '4': ' ' , '5': ' ' , '6': ' ' ,
-            '1': ' ' , '2': ' ' , '3': ' ' }
-
-board_keys = []
-
-for key in theBoard:
-    board_keys.append(key)
-
-''' We will have to print the updated board after every move in the game and 
-    thus we will make a function in which we'll define the printBoard function
-    so that we can easily print the board everytime by calling this function. '''
-
-def printBoard(board):
-    print(board['7'] + '|' + board['8'] + '|' + board['9'])
-    print('-+-+-')
-    print(board['4'] + '|' + board['5'] + '|' + board['6'])
-    print('-+-+-')
-    print(board['1'] + '|' + board['2'] + '|' + board['3'])
-
-# Now we'll write the main function which has all the gameplay functionality.
-def game():
-
-    turn = 'X'
-    count = 0
+    while not has_won(board_nums):
+        draw_board(board_nums)
+        print(f"Player {next_player}'s turn...")
+        square = int(input('Choose a square: '))
+        make_move(board_nums, next_player, square)
+        next_player = player_turn(next_player)
+        
+        # To check draw
+        num_of_o = 0
+        num_of_x = 0
+        for nums in board_nums:
+            if 'o' == nums:
+                num_of_o += 1
+            elif 'x' == nums:
+                num_of_x += 1
+        is_a_draw = num_of_o + num_of_x
+        if is_a_draw == 16:
+            print("It's a draw.")
+            break
+   
+    draw_board(board_nums)
+    print("Good Bye!!!")
+   
 
 
-    for i in range(10):
-        printBoard(theBoard)
-        print("It's your turn," + turn + ".Move to which place?")
+def board_values():
+    values = []
+    for number in range(16):
+            values.append(number+1)
+    return(values)
 
-        move = input()        
+def draw_board(values):
+    print()
+    print(f'\t  {values[0]} | {values[1]} | {values[2]} | {values[3]}')
+    print('\t ---+---+---+---')
+    print(f'\t  {values[4]} | {values[5]} | {values[6]} | {values[7]}')
+    print('\t ---+---+---+---')
+    print(f'\t  {values[8]} | {values[9]} | {values[10]} | {values[11]}')
+    print('\t ---+---+---+---')
+    print(f'\t {values[12]} | {values[13]} | {values[14]} | {values[15]}')
+    print()
 
-        if theBoard[move] == ' ':
-            theBoard[move] = turn
-            count += 1
-        else:
-            print("That place is already filled.\nMove to which place?")
-            continue
-
-        # Now we will check if player X or O has won,for every move after 5 moves. 
-        if count >= 5:
-            if theBoard['7'] == theBoard['8'] == theBoard['9'] != ' ': # across the top
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")                
-                break
-            elif theBoard['4'] == theBoard['5'] == theBoard['6'] != ' ': # across the middle
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break
-            elif theBoard['1'] == theBoard['2'] == theBoard['3'] != ' ': # across the bottom
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break
-            elif theBoard['1'] == theBoard['4'] == theBoard['7'] != ' ': # down the left side
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break
-            elif theBoard['2'] == theBoard['5'] == theBoard['8'] != ' ': # down the middle
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break
-            elif theBoard['3'] == theBoard['6'] == theBoard['9'] != ' ': # down the right side
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break 
-            elif theBoard['7'] == theBoard['5'] == theBoard['3'] != ' ': # diagonal
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break
-            elif theBoard['1'] == theBoard['5'] == theBoard['9'] != ' ': # diagonal
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break 
-
-        # If neither X nor O wins and the board is full, we'll declare the result as 'tie'.
-        if count == 9:
-            print("\nGame Over.\n")                
-            print("It's a Tie!!")
-
-        # Now we have to change the player after every move.
-        if turn =='X':
-            turn = 'O'
-        else:
-            turn = 'X'        
+def player_turn(player):
+    player1 = 'x'
+    player2 = 'o'
+    if player == '' or player == player1:
+        return player2
+    elif player == player2:
+        return player1
     
-    # Now we will ask if player wants to restart the game or not.
-    restart = input("Do want to play Again?(y/n)")
-    if restart == "y" or restart == "Y":  
-        for key in board_keys:
-            theBoard[key] = " "
 
-        game()
+def make_move(values, player, square):
+    square -= 1
+    values[square] = player
+    
+    return values
+
+def has_won(values):
+    win_combo = (values[0] == values[4] == values[8] == values[12] or
+                values[2] == values[6] == values[10] == values[14] or
+                values[1] == values[5] == values[9] == values[13] or
+                values[3] == values[7] == values[11] == values[15] or
+                values[0] == values[1] == values[2] == values[3] or
+                values[4] == values[5] == values[6] == values[7] or
+                values[8] == values[9] == values[10] == values[11] or
+                values[12] == values[13] == values[14] == values[15] or
+                values[0] == values[5] == values[10] == values[15] or
+                values[3] == values[6] == values[9] == values[12] )
+    return win_combo
+            
+
 
 if __name__ == "__main__":
-    game()
+    main()
