@@ -21,3 +21,8 @@ Your program must also meet the following requirements.
 - The program must have at least one while loop.
 - The program must have more than one function.
 - The program must have a function called main.
+
+
+**EMMANUEL AJUWON**
+
+*femzyfemite@gmail.com*
